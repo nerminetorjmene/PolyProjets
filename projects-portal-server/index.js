@@ -94,6 +94,34 @@ async function run() {
       const result = await projetsCollections.updateOne(filter, updateDoc, options);
       res.send(result)
     })
+    // route pour l'envoie de candidature 
+    app.post("/apply-project/:id", async (req, res) => {
+      const id = req.params.id;
+      const { applicationUrl } = req.body;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).send({ message: 'Invalid ID format' });
+      }
+
+      try {
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $push: {
+            applications: { url: applicationUrl, createdAt: new Date() }
+          }
+        };
+
+        const result = await projetsCollections.updateOne(filter, updateDoc);
+        
+        if (result.modifiedCount === 1) {
+          return res.status(200).send({ message: 'Application sent successfully!' });
+        } else {
+          return res.status(404).send({ message: 'Project not found or could not update' });
+        }
+      } catch (error) {
+        return res.status(500).send({ message: 'Error sending application', error });
+      }
+    });
 
   } catch (error) {
     console.error("An error occurred:", error);

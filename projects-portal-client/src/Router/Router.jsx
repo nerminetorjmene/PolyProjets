@@ -10,6 +10,7 @@ import ProjectDetails from "../Pages/ProjectDetails";
 import AuthPage from "../Pages/AuthPage";
 import About from "../Pages/About"; // Importation de la page À Propos
 import Services from "../Pages/Services";
+import SignUp from "../Pages/SignUp";
 
 const router = createBrowserRouter([
   {
@@ -49,14 +50,7 @@ const router = createBrowserRouter([
         path: "/project/:id",
         element: <ProjectDetails />
       },
-      {
-        path: "/user-profile",
-        element: <AuthPage />,
-      },
-      {
-        path: "/user-profile/:id",
-        element: <AuthPage />,
-      },
+      
     ]
   },
   {
@@ -65,7 +59,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/sign-up",
-    element: <AuthPage />
+    element: <SignUp />
   },
 ]);
 
