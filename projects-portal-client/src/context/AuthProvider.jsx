@@ -1,11 +1,8 @@
-// AuthProvider.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import app from '../firebase/firebase.config';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-
-const AuthContext = createContext();
-
+import app from '../firebase/firebase.config';
+import AuthContext from './AuthContext'; 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -15,13 +12,13 @@ export const AuthProvider = ({ children }) => {
   const db = getFirestore(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        await fetchUserRole(user.uid);  // Appel de la fonction pour récupérer le rôle
+    const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
+      if (userAuth) {
+        setUser(userAuth);
+        await fetchUserRole(userAuth.uid);
       } else {
         setUser(null);
-        setUserRole(null);  // Réinitialisez le rôle lorsque l'utilisateur se déconnecte
+        setUserRole(null);
       }
     });
 
@@ -40,7 +37,7 @@ export const AuthProvider = ({ children }) => {
           email: userAuth.user.email, 
           role: userSnap.data().role 
         });
-        setUserRole(userSnap.data().role);  // Définir également le rôle
+        setUserRole(userSnap.data().role);
       } else {
         console.log("No such document!");
       }
@@ -62,7 +59,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Ajoutez ici la logique pour la déconnexion
+    try {
+      auth.signOut();
+      setUser(null);
+      setUserRole(null);
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      throw error;
+    }
   };
 
   const value = {

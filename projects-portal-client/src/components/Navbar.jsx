@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthProvider";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

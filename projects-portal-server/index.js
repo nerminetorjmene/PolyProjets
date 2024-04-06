@@ -95,14 +95,27 @@ async function run() {
       const projects = await projetsCollections.find({posterEmail: req.params.email }).toArray();
       res.send(projects);
     });
-
-    // delete  a project
-    app.delete("/project/:id", async(req, res) => {
+// delete a project
+app.delete("/project/:id", async(req, res) => {
+  try {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
-      const result = await projetsCollections.deleteOne(filter);
-      res.send(result);
-    });
+      
+      // Supprimez l'élément de la base de données
+      const result = await projetsCollections.deleteOne({ _id: new ObjectId(id) });
+      
+      if (result.deletedCount === 1) {
+          // L'élément a été supprimé avec succès
+          res.json({ acknowledged: true, message: "L'élément a été supprimé avec succès." });
+      } else {
+          // Aucun élément n'a été supprimé (peut-être que l'ID n'existe pas)
+          res.status(404).json({ acknowledged: false, message: "Aucun élément trouvé avec cet ID." });
+      }
+  } catch (error) {
+      // Erreur lors de la suppression
+      res.status(500).json({ acknowledged: false, error: error.message });
+  }
+});
+
 
     // update a project
     app.patch("/update-project/:id", async(req, res) => {
