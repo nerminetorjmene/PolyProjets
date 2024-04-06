@@ -3,6 +3,13 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
+// Importation de firebase.config.js
+import('../projects-portal-client/src/firebase/firebase.config.js').then(({ app, db, getAuth, getUserByEmail }) => {
+  // Utilisez getAuth et getUserByEmail ici
+}).catch(err => {
+  console.error('Erreur lors de l\'importation du fichier firebase.config.js:', err);
+});
+
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -30,6 +37,22 @@ async function run() {
     const db = client.db("mernPolyProjets");
     const projetsCollections = db.collection("demoProjets");
 
+    // Middleware pour vérifier le rôle de l'utilisateur
+    const checkUserRole = (requiredRole) => async (req, res, next) => {
+      const userId = req.userId; // Supposons que vous ayez extrait cela du JWT
+      const user = await getUserById(userId); // Implémentez cette fonction selon votre logique de base de données
+      if (user && user.role === requiredRole) {
+        next();
+      } else {
+        res.status(403).json({ message: "Accès refusé" });
+      }
+    };
+
+    // Utilisation du middleware
+    app.get("/post-projet", checkUserRole(["administration", "enseignant"]), (req, res) => {
+      res.send("Bienvenue dans la zone réservée aux administrations et enseignants");
+    });
+
     // Routes
     app.post("/post-projet", async (req, res) => {
       const body = req.body;
@@ -50,6 +73,7 @@ async function run() {
       const projets = await projetsCollections.find({}).toArray();
       res.send(projets);
     });
+
     //get single project using id
     app.get("/all-projects/:id", async(req, res) => {
       const id = req.params.id;
@@ -62,29 +86,29 @@ async function run() {
       if (!project) {
         return res.status(404).send({ message: 'Project not found' });
       }
-      res.send(project)
-    })
+      res.send(project);
+    });
 
     // get projects by email 
     app.get("/myProjects/:email", async (req, res) => {
       //console.log(req.params.email);
       const projects = await projetsCollections.find({posterEmail: req.params.email }).toArray();
-      res.send(projects)
+      res.send(projects);
     });
 
     // delete  a project
     app.delete("/project/:id", async(req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)}
+      const filter = {_id: new ObjectId(id)};
       const result = await projetsCollections.deleteOne(filter);
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     // update a project
     app.patch("/update-project/:id", async(req, res) => {
       const id = req.params.id;
       const projectData = req.body;
-      const filter = {_id: new ObjectId(id)}
+      const filter = {_id: new ObjectId(id)};
       const options = {upsert: true};
       const updateDoc = {
         $set: {
@@ -92,8 +116,9 @@ async function run() {
         },
       };
       const result = await projetsCollections.updateOne(filter, updateDoc, options);
-      res.send(result)
-    })
+      res.send(result);
+    });
+
     // route pour l'envoie de candidature 
     app.post("/apply-project/:id", async (req, res) => {
       const id = req.params.id;
@@ -122,6 +147,16 @@ async function run() {
         return res.status(500).send({ message: 'Error sending application', error });
       }
     });
+
+    const getUserById = async (userId) => {
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        return userSnap.data();
+      } else {
+        return null;
+      }
+    };
 
   } catch (error) {
     console.error("An error occurred:", error);

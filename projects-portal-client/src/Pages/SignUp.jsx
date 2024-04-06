@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
 import firebase from '../firebase/firebase.config';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { 
+  getFirestore, 
+  doc, 
+  setDoc 
+} from "firebase/firestore";  // Importez Firestore ici
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -12,9 +16,11 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const { app } = firebase;
   const navigate = useNavigate(); // Hook pour la navigation
+  
 
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
+   const db = getFirestore(app);  // Initialisez Firestore ici
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -25,7 +31,17 @@ const SignUp = () => {
       await updateProfile(auth.currentUser, {
         displayName: `${firstName} ${lastName}`
       });
+      // Stocker des informations supplémentaires dans Firestore
+    const userProfileRef = doc(db, "users", userCredential.user.uid);
+    await setDoc(userProfileRef, {
+      email,
+      firstName,
+      lastName,
+      role, // Ici, vous stockez le rôle de l'utilisateur
+    });
 
+     // Afficher un message d'alerte pour confirmer l'inscription réussie
+     alert("Inscription réussie ! Bienvenue sur notre plateforme.");
       console.log("Inscription réussie avec l'utilisateur:", userCredential.user);
       navigate('/'); // Rediriger vers la page d'accueil après inscription réussie
     } catch (error) {
@@ -36,7 +52,9 @@ const SignUp = () => {
 
   const handleGoogleSignUp = () => {
     signInWithPopup(auth, googleProvider).then((result) => {
+      alert("Inscription réussie avec Google ! Bienvenue sur notre plateforme.");
       console.log(result.user);
+      navigate('/'); // Rediriger vers la page d'accueil après l'inscription réussie
     }).catch((error) => {
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
         setError('La fenêtre popup a été fermée avant la fin de la connexion.');

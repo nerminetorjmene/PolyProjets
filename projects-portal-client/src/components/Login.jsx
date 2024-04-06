@@ -97,7 +97,7 @@ const Login = () => {
         {error && <p className="text-red-500 text-xs italic mt-4">{error}</p>}
       </form>
       <p className="mt-4 text-blue-900">
-        Pas encore inscrit ? <Link to="/sign-up" className="text-blue-500 hover:text-blue-700 underline">Inscrivez-vous ici.</Link>
+        Pas encore inscrit ? <Link to="/sign-up" className="text-blue-500 hover:text-blue-700 un">Inscrivez-vous ici.</Link>
       </p>
     </div>
   );

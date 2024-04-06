@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const { user, logout, role} = useAuth(); // Utilisez useAuth pour accéder à l'utilisateur et à ses rôles
+    console.log(user); // Vérifiez les détails de l'utilisateur ici
     const handleMenuToggler = () => setIsMenuOpen(!isMenuOpen);
 
     const navItems = [
@@ -36,9 +38,16 @@ const Navbar = () => {
                     ))}
                 </ul>
                 {/*signup and login button*/}
+                {/*signup and login button*/}
                 <div className="text-base text-primary font-medium space-x-5 hidden lg:block">
-                    <Link to="/login" className="py-2 px-5 border rounded">Se Connecter</Link>
-                    <Link to="/sign-up" className="py-2 px-5 border rounded bg-blue text-white">S&apos;inscrire</Link>
+                    {!user ? (
+                        <>
+                            <Link to="/login" className="py-2 px-5 border rounded">Se Connecter</Link>
+                            <Link to="/sign-up" className="py-2 px-5 border rounded text-white bg-blue">S&rsquo;inscrire</Link>
+                        </>
+                    ) : (
+                        <button onClick={logout} className="py-2 px-5 border rounded">Se Déconnecter</button>
+                    )}
                 </div>
                 {/*mobile menu */}
                 <div className="md:hidden block">
