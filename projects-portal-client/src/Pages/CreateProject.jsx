@@ -18,22 +18,31 @@ const CreateProject = () => {
   }
         console.log(data);
         // Send the data to the server
-    fetch("http://localhost:5000/post-projet" , {
-      method: 'POST',
-      headers: {
-         'Content-Type': 'application/json' ,
-        },
-      body: JSON.stringify(data),
-    })
-    .then(res => res.json())
-    .then((result) => {
-      console.log(result);
-      if(result.acknowledged === true){
-      alert ("Projet Posté avec succés !!!")
-      console.log(result)
-    }
-    reset();
-   })
+        fetch("http://localhost:5000/post-projet", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(result => {
+          console.log(result);
+          if (result.acknowledged === true) {
+            alert("Projet posté avec succès !!!");
+            console.log(result);
+          }
+          reset();
+        })
+        .catch(error => {
+          console.error('Il y a eu un problème avec votre opération fetch:', error);
+        });
+        
     //.catch((error) => console.error('Error:', error));
     
   };

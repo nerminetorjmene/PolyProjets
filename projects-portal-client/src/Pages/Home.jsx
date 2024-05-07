@@ -26,12 +26,17 @@ const Home = () => {
             });
     }, []);
 
+
     const handleInputChange = (event) => {
         setQuery(event.target.value);
         setShowProjectCount(false);
         console.log("Query:", event.target.value); // Vérification de l'état query
     };
-
+    const handleLocationChange = (event) => {
+        setSelectedCategory(event.target.value); // Modifier cette ligne pour gérer la localisation
+        setCurrentPage(1);
+        setShowProjectCount(true);
+    };
     const handleChange = (event) => {
         setSelectedCategory(event.target.value);
         setCurrentPage(1);
@@ -69,24 +74,31 @@ const Home = () => {
 
     const filteredProjets = useMemo(() => {
         return projets
-            .filter(projet => 
-                query ? 
-                projet.requiredSkills && projet.requiredSkills.some(skill => skill.toLowerCase().includes(query.toLowerCase())) 
-                : true
-            )
-            .filter(projet => {
-                const projetDate = new Date(projet.postingDate);
-                switch(selectedPostingDate) {
-                    case "24hours":
-                        return projetDate >= twentyFourHoursAgo;
-                    case "7days":
-                        return projetDate >= sevenDaysAgo;
-                    case "30days":
-                        return projetDate >= ThirtyDaysAgo;
-                    default:
-                        return true;
-                }
-            })
+          .filter(projet => 
+            query ? 
+            projet.mentorName && projet.mentorName.toLowerCase().includes(query.toLowerCase()) 
+            : true
+          )
+          .filter(projet => {
+            console.log('Projet Date:', projet.postingDate);
+            const projetDate = new Date(projet.postingDate);
+            console.log('Converted Projet Date:', projetDate);
+            console.log('Filter Date:', twentyFourHoursAgo, sevenDaysAgo, ThirtyDaysAgo);
+            switch(selectedPostingDate) {
+                case "24hours":
+                    console.log('24 hours filter:', projetDate >= twentyFourHoursAgo);
+                    return projetDate >= twentyFourHoursAgo;
+                case "7days":
+                    console.log('7 days filter:', projetDate >= sevenDaysAgo);
+                    return projetDate >= sevenDaysAgo;
+                case "30days":
+                    console.log('30 days filter:', projetDate >= ThirtyDaysAgo);
+                    return projetDate >= ThirtyDaysAgo;
+                default:
+                    return true;
+            }
+        })
+        
             .filter(projet => {
                 if (selectedCategory === "all") return true;
                 return (
@@ -116,9 +128,10 @@ const Home = () => {
 
     return (
         <div>
-            <Banner
+              <Banner
                 query={query}
                 handleInputChange={handleInputChange}
+                handleLocationChange={handleLocationChange}  // Ajouter cette prop pour gérer la localisation
             />
             {/* main content */}
             <div className=" bg-[#FAFAFA] md:grid grid-cols-4 gap-8 lg:px-24 px-4 py-12">
