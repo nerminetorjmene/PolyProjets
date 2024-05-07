@@ -15,6 +15,7 @@ const Home = () => {
     const [selectedEducationLevel, setSelectedEducationLevel] = useState("all");
     const [showProjectCount, setShowProjectCount] = useState(false);
     const [selectedPostingDate, setSelectedPostingDate] = useState("all");
+    const [descriptionQuery, setDescriptionQuery] = useState("");
 
     useEffect(() => {
         setIsLoading(true);
@@ -25,6 +26,11 @@ const Home = () => {
                 setIsLoading(false);
             });
     }, []);
+
+    const handleDescriptionChange = (event) => {
+        setDescriptionQuery(event.target.value);
+        console.log("Description Query:", event.target.value); // To monitor changes in the description query
+    };
 
 
     const handleInputChange = (event) => {
@@ -79,6 +85,11 @@ const Home = () => {
             projet.mentorName && projet.mentorName.toLowerCase().includes(query.toLowerCase()) 
             : true
           )
+          .filter(projet => 
+            descriptionQuery ?
+            projet.description && projet.description.toLowerCase().includes(descriptionQuery.toLowerCase()) 
+            : true
+          )
           .filter(projet => {
             console.log('Projet Date:', projet.postingDate);
             const projetDate = new Date(projet.postingDate);
@@ -116,7 +127,7 @@ const Home = () => {
                 if (selectedEducationLevel === "all") return true;
                 return projet.educationLevel && projet.educationLevel.toLowerCase() === selectedEducationLevel.toLowerCase();
             });
-    }, [projets, query, selectedCategory, selectedDepartment, selectedEducationLevel, selectedPostingDate, twentyFourHoursAgo, sevenDaysAgo, ThirtyDaysAgo]);
+    }, [projets, query, descriptionQuery, selectedCategory, selectedDepartment, selectedEducationLevel, selectedPostingDate, twentyFourHoursAgo, sevenDaysAgo, ThirtyDaysAgo]);
 
     const displayedProjects = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -128,11 +139,14 @@ const Home = () => {
 
     return (
         <div>
-              <Banner
-                query={query}
-                handleInputChange={handleInputChange}
-                handleLocationChange={handleLocationChange}  // Ajouter cette prop pour gérer la localisation
-            />
+ <Banner
+    query={query}
+    handleInputChange={handleInputChange}
+    descriptionQuery={descriptionQuery}
+    handleDescriptionChange={handleDescriptionChange}
+    
+/>
+
             {/* main content */}
             <div className=" bg-[#FAFAFA] md:grid grid-cols-4 gap-8 lg:px-24 px-4 py-12">
                 {/* Left side */}
