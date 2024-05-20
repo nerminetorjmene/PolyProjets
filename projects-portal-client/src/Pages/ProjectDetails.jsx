@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PageHeader from '../components/PageHeader';
+import Navbar from '../components/Navbar';
 
 const ProjectDetails = () => {
     const { id } = useParams();
@@ -44,6 +45,7 @@ const ProjectDetails = () => {
 
     return (
         <div className='max-w-screen-2xl container mx-auto xl:px-24 px-4'>
+            <Navbar/>
             <PageHeader title="Détails du projet" path="Détails du projet" />
     <div className=" mb-10">
         <h2 className="text-lg text-blue-600 font-semibold">Les détails du projet: {id}</h2>

@@ -10,7 +10,7 @@ const Navbar = () => {
     const handleMenuToggler = () => setIsMenuOpen(!isMenuOpen);
 
     const navItems = [
-        { path: "/", title: " Rechercher" },
+        { path: "/home", title: " Rechercher" },
         { path: "/my-project", title: "Mes Projets " },
         { path: "/workload", title: "Charge de travail estimée" },
         { path: "/post-projet", title: "Proposer un Projet" },
@@ -20,7 +20,7 @@ const Navbar = () => {
         <header className="max-w-screen-2xl container max-auto xl:px-24 px-4">
       
             <nav className="flex items-center justify-between py-6">
-                <a href="/" className="flex items-center gap-4 text-2xl text-black"> {/* Increase the gap here */}
+                <a href="/home" className="flex items-center gap-4 text-2xl text-black"> {/* Increase the gap here */}
                     <img src="/images/logo.png" alt="Logo PolyProjets" style={{ height: '40px', borderRadius: '10px', width: '40px' }} />
                     <span>PolyProjets</span>
                 </a>

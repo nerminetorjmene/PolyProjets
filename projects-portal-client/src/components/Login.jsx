@@ -20,7 +20,7 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Connexion réussie");
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.error("Erreur de connexion:", error.message);
       setError(error.message);
@@ -30,7 +30,7 @@ const Login = () => {
   const handleGoogleLogin = () => {
     signInWithPopup(auth, GoogleProvider).then((result) => {
       console.log(result.user);
-      navigate('/');
+      navigate('/home');
     }).catch((error) => {
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
         setError('La fenêtre popup a été fermée avant la fin de la connexion.');

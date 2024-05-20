@@ -1,8 +1,10 @@
 import React from 'react';
+import Navbar from '../components/Navbar';
 
 const Services = () => {
   return (
     <div className='container mx-auto px-4 py-8'>
+      <Navbar/>
       <h1 className='text-3xl mb-4 font-bold text-blue-800'>Nos Services</h1>
       
       <section className="mb-8">

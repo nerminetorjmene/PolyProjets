@@ -1,8 +1,10 @@
 import React from 'react';
+import Navbar from '../components/Navbar';
 
 const About = () => {
   return (
     <div className='container mx-auto px-4 py-8'>
+      <Navbar />
       <h1 className='text-3xl mb-4 font-bold text-blue-600'>À Propos de PolyProjets</h1>
       
       <p className='mb-4'>Bienvenue sur <strong>PolyProjets</strong>, le portail de projets exclusif à la faculté Polytech Monastir. Notre mission est de promouvoir l&rsquo;innovation, la créativité et la collaboration entre étudiants, enseignants et partenaires industriels.</p>

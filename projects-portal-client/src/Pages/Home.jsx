@@ -3,8 +3,16 @@ import Banner from "../components/Banner";
 import Card from "../components/Card";
 import Sidebar from "../sidebar/Sidebar";
 import Newsletter from "../components/Newsletter";
+import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
+import firebase from '../firebase/firebase.config';
+import Navbar from '../components/Navbar'; 
+
 
 const Home = () => {
+    const navigate = useNavigate();
+    const { app } = firebase;
+    const auth = getAuth(app);
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedDepartment, setSelectedDepartment] = useState("all");
     const [projets, setProjets] = useState([]);
@@ -26,6 +34,16 @@ const Home = () => {
                 setIsLoading(false);
             });
     }, []);
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+          if (!user) {
+            navigate('/login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+          }
+        });
+    
+        return () => unsubscribe();
+      }, [navigate, auth]);
+    
 
     const handleDescriptionChange = (event) => {
         setDescriptionQuery(event.target.value);
@@ -139,6 +157,7 @@ const Home = () => {
 
     return (
         <div>
+            <Navbar />
  <Banner
     query={query}
     handleInputChange={handleInputChange}

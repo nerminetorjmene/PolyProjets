@@ -7,10 +7,10 @@ import Workload from "../Pages/Workload";
 import UpdateProject from "../Pages/UpdateProject";
 import Login from "../components/Login";
 import ProjectDetails from "../Pages/ProjectDetails";
-import AuthPage from "../Pages/AuthPage";
 import About from "../Pages/About"; // Importation de la page À Propos
 import Services from "../Pages/Services";
 import SignUp from "../Pages/SignUp";
+import HomePage from "../Pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +19,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <HomePage />  // Définition de HomePage comme page d'accueil
+      },
+      {
+        path: "/home",
         element: <Home />
       },
       {

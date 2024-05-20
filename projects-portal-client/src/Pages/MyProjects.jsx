@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
+import Navbar from '../components/Navbar'; 
 
 const MyProjects = () => {
     const [projects, setProjects] = useState([]);
@@ -68,7 +69,9 @@ const MyProjects = () => {
   
 
     return (
+      
         <div className='max-w-screen-2xl container mx-auto xl:px-24 px-4'>
+            <Navbar />
             <div className='my-projects-container'>
                 <h1 className="text-center p-4 text-2xl bg-gray-150 font-bold text-gray-800 dark:text-white shadow-lg transition-all duration-300 hover:text-blue-500">
                     Tous mes Projets

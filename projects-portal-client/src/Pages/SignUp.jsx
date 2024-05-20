@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
 import firebase from '../firebase/firebase.config';
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,39 +23,22 @@ const SignUp = () => {
   const googleProvider = new GoogleAuthProvider();
    const db = getFirestore(app);  // Initialisez Firestore ici
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, {
-        displayName: `${firstName} ${lastName}`
-      });
-      // Stocker des informations supplémentaires dans Firestore
-    const userProfileRef = doc(db, "users", userCredential.user.uid);
-    await setDoc(userProfileRef, {
-      email,
-      firstName,
-      lastName,
-      role, // Ici, vous stockez le rôle de l'utilisateur
-    });
-
-     // Afficher un message d'alerte pour confirmer l'inscription réussie
-     alert("Inscription réussie ! Bienvenue sur notre plateforme.");
-      console.log("Inscription réussie avec l'utilisateur:", userCredential.user);
-      navigate('/'); // Rediriger vers la page d'accueil après inscription réussie
-    } catch (error) {
-      console.error("Erreur d'inscription:", error.message);
-      setError(error.message);
-    }
-  };
-
+   const handleSignUp = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // L'inscription a réussi et l'utilisateur est automatiquement connecté
+            navigate('/'); // Redirige vers Home
+        })
+        .catch((error) => {
+            console.error("Erreur d'inscription :", error.message);
+            // Gérez les erreurs ici, comme afficher des messages à l'utilisateur
+        });
+};
   const handleGoogleSignUp = () => {
     signInWithPopup(auth, googleProvider).then((result) => {
       alert("Inscription réussie avec Google ! Bienvenue sur notre plateforme.");
       console.log(result.user);
-      navigate('/'); // Rediriger vers la page d'accueil après l'inscription réussie
+      navigate('/home'); // Rediriger vers la page d'accueil après l'inscription réussie
     }).catch((error) => {
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
         setError('La fenêtre popup a été fermée avant la fin de la connexion.');
@@ -64,11 +48,16 @@ const SignUp = () => {
       }
     });
   };
+  
 
   return (
     <div className='h-screen flex flex-col items-center justify-center bg-blue-100'>
       <h2 className='text-2xl font-bold mb-4 text-blue-900'>Créer un compte</h2>
-      <form onSubmit={handleSignUp} className='w-full max-w-md bg-white p-6 rounded-lg shadow-md'>
+      <form onSubmit={(e) => {
+            e.preventDefault();
+            // Récupérez email et mot de passe à partir du formulaire ici
+            handleSignUp(email, password);
+        }} className='w-full max-w-md bg-white p-6 rounded-lg shadow-md'> 
         {/* Champ Prénom */}
         <div className='mb-4'>
           <label htmlFor='firstName' className='block text-gray-700 text-sm font-bold mb-2'>

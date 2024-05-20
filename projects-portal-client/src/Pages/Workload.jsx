@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PageHeader from '../components/PageHeader'
+import Navbar from '../components/Navbar';
 
 const Workload = () => {
     const [searchText, setSearchText] = useState('');
@@ -15,9 +16,13 @@ const Workload = () => {
         setCharge(filter)
        
     }
+    const handleClick = (info) => {
+      alert(info); // Affiche les informations dans une alerte, mais vous pouvez l'adapter pour faire autre chose
+  };
 console.log(searchText)
   return (
     <div className='maw-w-screen-2xl container mx-auto xl:px-24 px-4'>
+     
       <PageHeader title={"Charge de travail estimée"} path={"Charge"}/>
 
       <div className='mt-5'>

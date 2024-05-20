@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useForm } from "react-hook-form"
 import CreatableSelect from "react-select/creatable"
+import Navbar from '../components/Navbar';
 
 const CreateProject = () => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -71,6 +72,7 @@ const CreateProject = () => {
     
   return (
     <div className='max-w-screen-2xl container max-auto xl:px-4'>
+      <Navbar/>
         {/*form */}
         <div className='bg-[#FAFAFA] py-10 px-4 lg:px-16 '>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
